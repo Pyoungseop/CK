@@ -92,8 +92,8 @@ public class Kuramotomodel extends javax.swing.JApplet {
             g.setColor(color);
             theta += 0.1;
             //numberOfParticles = numOfPtlSlider.getValue();
-            radius = (int) Math.abs(Math.sin(theta)*1000);
-            radius = 255;
+            radius = (int) Math.abs(50+Math.sin(theta)*50);
+            //radius = 255;
             g.fillOval(100-radius/2,125-radius/2,radius,radius);
             System.out.format("%d %d\n",radius, numberOfParticles);
                         
