@@ -112,7 +112,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
-                          <Component id="orderParameterPanel" pref="312" max="32767" attributes="0"/>
+                          <Component id="orderParameterPanel" pref="314" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                   </Group>
@@ -178,7 +178,7 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="startToPauseButton" linkSize="2" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <EmptySpace pref="8" max="32767" attributes="0"/>
+                                  <EmptySpace pref="10" max="32767" attributes="0"/>
                                   <Component id="resetButton" linkSize="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -231,6 +231,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="numOfPtl">
                   <Properties>
+                    <Property name="text" type="java.lang.String" value="500"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[40, 27]"/>
                     </Property>
@@ -252,6 +253,7 @@
                 </Component>
                 <Component class="javax.swing.JTextField" name="couplingStr">
                   <Properties>
+                    <Property name="text" type="java.lang.String" value="50"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[40, 27]"/>
                     </Property>

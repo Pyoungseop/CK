@@ -42,8 +42,8 @@ public class Kuramotomodel extends javax.swing.JApplet {
             java.util.logging.Logger.getLogger(Kuramotomodel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        numberOfParticles = 0;
-        couplingStrength = 0;
+        numberOfParticles = 1;
+        couplingStrength = 1;
         /* Create and display the applet */
         try {
             java.awt.EventQueue.invokeAndWait(new Runnable() {
@@ -70,8 +70,8 @@ public class Kuramotomodel extends javax.swing.JApplet {
             displayPanel.removeAll();
             displayPanel.repaint();
             
-           // orderParameterPanel.removeAll();
-           // orderParameterPanel.repaint();
+            orderParameterPanel.removeAll();
+            orderParameterPanel.repaint();
         }
     };
     
@@ -101,20 +101,34 @@ public class Kuramotomodel extends javax.swing.JApplet {
     }
     public class OrderParameterDisplay extends javax.swing.JPanel{
         private int radius;
+        private double[] theta,omega;
         OrderParameterDisplay(){
             super();
             radius = 0;
+            theta= new double[1000];
+            omega= new double[1000];
+            for(int i=0;i<1000;i++){
+                theta[i] = Math.random();
+                omega[i] = Math.random();
+            }
+            
         }
         
         public void paintComponent(Graphics g)
         {
-            
-            final int STEP = 5;
+            double x,y;
             super.paintComponent(g);
             g.setColor(Color.blue);
-            radius = radius+STEP;
-            g.drawOval(100-radius/2,125-radius/2,radius,radius);
-            System.out.format("%d\n",radius);
+            radius = 10;
+            
+            for(int i=0;i<numberOfParticles;i++){
+                omega[i] += theta[i];
+                x=100*Math.cos(omega[i]);
+                y=-100*Math.sin(omega[i]);
+                g.drawOval((int)x+148,(int)y+148,radius,radius);
+            }
+            g.setColor(Color.red);
+            g.drawOval(53,53,200,200);
             
         }
     }
@@ -192,6 +206,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
             }
         });
 
+        numOfPtl.setText("500");
         numOfPtl.setPreferredSize(new java.awt.Dimension(40, 27));
         numOfPtl.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -212,6 +227,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
             }
         });
 
+        couplingStr.setText("50");
         couplingStr.setPreferredSize(new java.awt.Dimension(40, 27));
         couplingStr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -252,7 +268,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
                         .addComponent(couplingStr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(startToPauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                         .addComponent(resetButton)))
                 .addContainerGap())
         );
@@ -287,7 +303,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(orderParameterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 312, Short.MAX_VALUE))
+                    .addComponent(orderParameterPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE))
                 .addGap(10, 10, 10))
         );
         jPanel2Layout.setVerticalGroup(
