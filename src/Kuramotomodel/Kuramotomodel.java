@@ -76,27 +76,35 @@ public class Kuramotomodel extends javax.swing.JApplet {
     };
     
     public class MainDisplay extends javax.swing.JPanel{                
-        private int radius;
-        private double theta;
+        private int radius,x[],y[];
+        private double theta[],omega[];
         MainDisplay(){
             super();
             radius = 0 ;
-            theta =0;
+            theta= new double[1000];
+            omega= new double[1000];
+            x= new int[1000];
+            y= new int[1000];
+            for(int i=0;i<1000;i++){
+                theta[i] = Math.random();
+                omega[i] = Math.random();
+                x[i] = (int)(Math.random()*456);
+                y[i] = (int)(Math.random()*456);
+            }
         }
         
         public void paintComponent(Graphics g)
         {   
             final int STEP = 5;
             super.paintComponent(g);
-            Color color = new Color(255,255, 0,(int)(255/2+Math.sin(theta)*255/2));
-            g.setColor(color);
-            theta += 0.1;
-            //numberOfParticles = numOfPtlSlider.getValue();
-            radius = (int) Math.abs(50+Math.sin(theta)*50);
-            //radius = 255;
-            g.fillOval(100-radius/2,125-radius/2,radius,radius);
-            System.out.format("%d %d\n",radius, numberOfParticles);
-                        
+            
+            for(int i=0;i<numberOfParticles;i++){
+                omega[i] += theta[i];
+                Color color = new Color(255,255, 0,(int)(255/2+Math.sin(omega[i])*255/2));
+                g.setColor(color);
+                radius = (int) Math.abs(10+Math.sin(omega[i])*10);
+                g.fillOval(x[i]-radius/2,y[i]-radius/2,radius,radius);
+            }
         }
     }
     public class OrderParameterDisplay extends javax.swing.JPanel{
