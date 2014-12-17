@@ -61,6 +61,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
                     initComponents(); 
                     timer = new javax.swing.Timer(1,new aListener());
                     kuramotoSystem = new KuramotoModelSystem(numberOfParticles,couplingStrength,displayPanel.getWidth());
+                    stop();
                 }
             });
         } catch (Exception ex) {
@@ -106,7 +107,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             int radius;
-            kuramotoSystem.Model_Dynamics(2.);
+            kuramotoSystem.Model_Dynamics();
             for(int i=0;i<numberOfParticles;i++){
                 //kuramotoSystem.omega[i] += kuramotoSystem.theta[i];
                 Color color = new Color(255,255, 0,(int)(255/2+Math.sin(kuramotoSystem.theta[i])*255/2));
@@ -149,6 +150,8 @@ public class Kuramotomodel extends javax.swing.JApplet {
         
         
     }
+    // Kuramoto model의 각 입자의 phase를 보여주는것으로 
+    // ordered or disordered를 파악할 수 있음
     public class OrderParameterDisplay extends javax.swing.JPanel{
         private int radius;
         
@@ -165,8 +168,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
             g.setColor(Color.blue);
             radius = 10;
             
-            for(int i=0;i<numberOfParticles;i++){
-               // kuramotoSystem.omega[i] += kuramotoSystem.theta[i];
+            for(int i=0;i<numberOfParticles;i++){        
                 x=100*Math.cos(kuramotoSystem.theta[i]);
                 y=-100*Math.sin(kuramotoSystem.theta[i]);
                 g.drawOval((int)x+148,(int)y+148,radius,radius);
@@ -423,6 +425,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
     }// </editor-fold>//GEN-END:initComponents
 
     private void numOfPtlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numOfPtlActionPerformed
+        // text box에서 바로 입력을 받았을때 최대 최소에 대한 제한조건을 준다.
         try{ 
             int value = Integer.parseInt(numOfPtl.getText());
             if(value<=1000){
@@ -438,10 +441,12 @@ public class Kuramotomodel extends javax.swing.JApplet {
     }//GEN-LAST:event_numOfPtlActionPerformed
 
     private void numOfPtlSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_numOfPtlSliderStateChanged
+        // Slider로 부터 number of particles의 text box의 text를 재설정
         numOfPtl.setText(""+numOfPtlSlider.getValue());
     }//GEN-LAST:event_numOfPtlSliderStateChanged
 
     private void couplingStrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_couplingStrActionPerformed
+        // text box에서 바로 입력을 받았을때 최대 최소에 대한 제한조건을 준다.
         try{
             double value = 10*Double.parseDouble(couplingStr.getText());
             if(value<=100){
@@ -457,6 +462,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
     }//GEN-LAST:event_couplingStrActionPerformed
 
     private void couplingStrSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_couplingStrSliderStateChanged
+        // Slider로 부터 couplingStrength의 text box의 text를 재설정
         couplingStr.setText(""+(double) couplingStrSlider.getValue()/10.);
     }//GEN-LAST:event_couplingStrSliderStateChanged
 
@@ -464,7 +470,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
         
         if(startToPauseButton.isSelected()){
             startToPauseButton.setText("Pause");
-   
+            
             start();
         }else{
             startToPauseButton.setText("Start");
@@ -473,11 +479,13 @@ public class Kuramotomodel extends javax.swing.JApplet {
     }//GEN-LAST:event_startToPauseButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-        // TODO add your handling code here:
+        
+        // Slider로 부터 couplingStrength와 numberOfParticles를 받는다.
         numberOfParticles = numOfPtlSlider.getValue();
         couplingStrength =(double) couplingStrSlider.getValue()/10.;
+        
+        // Kuramoto Model를 다시 선언한다.
         kuramotoSystem = new KuramotoModelSystem(numberOfParticles,couplingStrength,displayPanel.getWidth());
-        startToPauseButton.setSelected(rootPaneCheckingEnabled);
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void numOfPtlSliderPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_numOfPtlSliderPropertyChange
@@ -489,6 +497,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
     }//GEN-LAST:event_numOfPtlSliderPropertyChange
 
     private void couplingStrSliderPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_couplingStrSliderPropertyChange
+        // Slider로 부터 couplingStrength를 받는다.
         couplingStrength = (double) couplingStrSlider.getValue()/10.;
     }//GEN-LAST:event_couplingStrSliderPropertyChange
 
@@ -515,7 +524,7 @@ class KuramotoModelSystem {
    double couplingStrength;
    double orderParameter,psi;
    int positionX[],positionY[];
-   double theta[],newTheta[],omega[] ;
+   double theta[],omega[] ;
       
    int    numberOfParticles ;
        
@@ -527,10 +536,10 @@ class KuramotoModelSystem {
       
       positionX = new int[numberOfParticles] ;
       positionY = new int[numberOfParticles] ;
-      theta     = new double[numberOfParticles] ;
-      newTheta     = new double[numberOfParticles] ;
+      theta     = new double[numberOfParticles] ;      
       omega     = new double[numberOfParticles] ;
       
+      // 모든 입자의 위치와 고유진동수, 현재 phase를 초기화한다.
       for(int i=0;i<NofPtl;i++) { 
          positionX[i] =(int)(Math.random()*width);
          positionY[i] =(int)(Math.random()*width);
@@ -539,43 +548,51 @@ class KuramotoModelSystem {
       }
       double sinPsi=0,cosPsi=0;
       
+      // order parameter를 구하기위해 모든 입자의 vector를 합한다.
       for(int i=0;i<numberOfParticles;i++){
         sinPsi += Math.sin(theta[i])/(double) numberOfParticles;
         cosPsi += Math.cos(theta[i])/(double) numberOfParticles;
       }
+      
+      // order parameter의 크기
       orderParameter = Math.sqrt((sinPsi*sinPsi + cosPsi * cosPsi));
+      
+      // order parameter의 phase
       psi =Math.atan2(sinPsi, cosPsi);
       
 }
        
 // time evolution 
-   void Model_Dynamics(double t) {
+   void Model_Dynamics() {
       int randomNumber,i;
       double tr,wr,sinPsi,cosPsi;
       
       double tau=0.01;
       
       for(i=0;i<numberOfParticles;i++){
+        // 임의로 입자 하나를 선택하여 그 입자의 theta를 갱신한다.
         randomNumber = (int) (Math.random()*numberOfParticles);
         wr = omega[randomNumber];
         tr = theta[randomNumber];
         
-        //theta[randomNumber] += RungeKutta(wr,tr,tau);
-        
+        //theta[randomNumber] += RungeKutta(wr,tr,tau); // RungeKutta Method
         theta[randomNumber] += tau*dtheta(wr,tr); // Euler's Method
 
+        // theta의 범위를 -pi에서 +pi로 재설정한다.
         while(theta[randomNumber]>1*pi) theta[randomNumber] -= 2.*pi;
         while(theta[randomNumber]<-1*pi) theta[randomNumber] += 2.*pi;
-        //System.out.printf("Kuramoto %d %e\n",randomNumber,theta[randomNumber]);
       }
        
       cosPsi = 0; sinPsi = 0;
-          
+      // order parameter를 구하기위해 모든 입자의 vector를 합한다.
       for(i=0;i<numberOfParticles;i++){
         sinPsi += Math.sin(theta[i])/(double) numberOfParticles;
         cosPsi += Math.cos(theta[i])/(double) numberOfParticles;
       }
+      // order parameter의 크기
       orderParameter = Math.sqrt((sinPsi*sinPsi + cosPsi * cosPsi));
+      
+      // order parameter의 phase
       psi =Math.atan2(sinPsi, cosPsi);      
       
    }
