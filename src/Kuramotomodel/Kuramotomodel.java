@@ -60,8 +60,10 @@ public class Kuramotomodel extends javax.swing.JApplet {
                 public void run() {
                     initComponents(); 
                     timer = new javax.swing.Timer(1,new aListener());
+                    timer.stop();
+                    System.out.println(timer.isRunning());
                     kuramotoSystem = new KuramotoModelSystem(numberOfParticles,couplingStrength,displayPanel.getWidth());
-                    stop();
+                    
                 }
             });
         } catch (Exception ex) {
@@ -69,35 +71,19 @@ public class Kuramotomodel extends javax.swing.JApplet {
         }
     }
    
-    public void start()
-    {
-        timer.start();
-       
-    }
-   
-    public void stop()
-    {
-        timer.stop();
-    }
-    
-    public void reset()
-    {
-        
-    }
-
-
     public class aListener implements ActionListener 
     {
        
         public void actionPerformed(ActionEvent e) {
-            displayPanel.removeAll();
-            displayPanel.repaint();
+                displayPanel.removeAll();
+                orderParameterPanel.removeAll();
+                if(timer.isRunning()){}else{return;}
+                displayPanel.repaint();
+                orderParameterPanel.repaint();
             
-            orderParameterPanel.removeAll();
-            orderParameterPanel.repaint();
         }
     };
-    
+    // Kuramoto model의 각 입자의 반짝이는 모습을 가시적으로 보여
     public class MainDisplay extends javax.swing.JPanel{                
         
         MainDisplay(){
@@ -107,48 +93,15 @@ public class Kuramotomodel extends javax.swing.JApplet {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             int radius;
+            
             kuramotoSystem.Model_Dynamics();
             for(int i=0;i<numberOfParticles;i++){
-                //kuramotoSystem.omega[i] += kuramotoSystem.theta[i];
                 Color color = new Color(255,255, 0,(int)(255/2+Math.sin(kuramotoSystem.theta[i])*255/2));
                 g.setColor(color);
                 radius = (int) Math.abs(4+Math.sin(kuramotoSystem.theta[i])*4);
                 g.fillOval(kuramotoSystem.positionX[i]-radius/2,kuramotoSystem.positionY[i]-radius/2,radius,radius);
             }
         }
-        /*
-        // Gradation Oval.
-        public void paintComponent(Graphics g)
-        {   
-            final int STEP = 5;
-            super.paintComponent(g);
-            
-            int radius = 30;
-            
-            Graphics2D g2=(Graphics2D)g;
-            float[] dist={0.0f,0.15f};
-            Color color = new Color(255,255, 0,0);
-            Color[] colors={Color.yellow,color};
-            Point2D center;            
-            RadialGradientPaint p; 
-            kuramotoSystem.Model_Dynamics(2.);
-            for(int i=0;i<numberOfParticles;i++){                           
-               
-                color = new Color(255,255, 0,(int)(255/2+Math.sin(kuramotoSystem.theta[i])*255/2));
-                colors[0]=color;
-                center = new Point2D.Float((float)kuramotoSystem.positionX[i],(float)kuramotoSystem.positionY[i]);                                                
-                p = new RadialGradientPaint(center,1f * radius,dist,colors);
-                g2.setPaint(p);
-                g2.fillOval(kuramotoSystem.positionX[i]-radius/2,kuramotoSystem.positionY[i]-radius/2,radius,radius);
-                           
-                //radius = (int) Math.abs(10+Math.sin(omega[i])*10);
-                //g.fillOval(x[i]-radius/2,y[i]-radius/2,radius,radius);
-            }
-            g2.dispose(); 
-         }
-        */
-        
-        
     }
     // Kuramoto model의 각 입자의 phase를 보여주는것으로 
     // ordered or disordered를 파악할 수 있음
@@ -157,13 +110,12 @@ public class Kuramotomodel extends javax.swing.JApplet {
         
         OrderParameterDisplay(){
             super();
-           
-            
         }
         
         public void paintComponent(Graphics g)
         {
             double x,y;
+            int center=orderParameterPanel.getWidth()/2;
             super.paintComponent(g);
             g.setColor(Color.blue);
             radius = 10;
@@ -174,8 +126,12 @@ public class Kuramotomodel extends javax.swing.JApplet {
                 g.drawOval((int)x+148,(int)y+148,radius,radius);
             }
             g.setColor(Color.red);
-            g.drawOval(53,53,200,200);
+            g.drawOval(center-100,center-100,200,200);
             
+            x=100*kuramotoSystem.orderParameter*Math.cos(kuramotoSystem.psi);
+            y=-100*kuramotoSystem.orderParameter*Math.sin(kuramotoSystem.psi);
+            g.fillOval((int)x+center-radius/2,(int)y+center-radius/2,radius,radius);
+            g.drawLine(center, center, (int)x+center, (int)y+center);
         }
     }
     /**
@@ -200,6 +156,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
         couplingStr = new javax.swing.JTextField();
         startToPauseButton = new javax.swing.JToggleButton();
         resetButton = new javax.swing.JButton();
+        exitButton = new javax.swing.JButton();
 
         jInternalFrame1.setTitle("Kuramoto model");
         jInternalFrame1.setMaximumSize(new java.awt.Dimension(800, 600));
@@ -303,6 +260,13 @@ public class Kuramotomodel extends javax.swing.JApplet {
             }
         });
 
+        exitButton.setText("Exit");
+        exitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -310,35 +274,29 @@ public class Kuramotomodel extends javax.swing.JApplet {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(116, 116, 116)
                                 .addComponent(numOfPtl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(127, 127, 127)
-                                .addComponent(couplingStr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addContainerGap())
+                                .addComponent(couplingStr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(startToPauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(resetButton)
-                        .addGap(12, 12, 12))))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(numOfPtlSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(couplingStrSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(startToPauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(exitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(numOfPtlSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(couplingStrSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
-
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {resetButton, startToPauseButton});
-
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -357,7 +315,8 @@ public class Kuramotomodel extends javax.swing.JApplet {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(startToPauseButton)
-                    .addComponent(resetButton)))
+                    .addComponent(resetButton)
+                    .addComponent(exitButton)))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -366,7 +325,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(orderParameterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -470,11 +429,10 @@ public class Kuramotomodel extends javax.swing.JApplet {
         
         if(startToPauseButton.isSelected()){
             startToPauseButton.setText("Pause");
-            
-            start();
+            timer.start();
         }else{
             startToPauseButton.setText("Start");
-            stop();
+            timer.stop();
         }
     }//GEN-LAST:event_startToPauseButtonActionPerformed
 
@@ -486,6 +444,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
         
         // Kuramoto Model를 다시 선언한다.
         kuramotoSystem = new KuramotoModelSystem(numberOfParticles,couplingStrength,displayPanel.getWidth());
+        timer.start();
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void numOfPtlSliderPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_numOfPtlSliderPropertyChange
@@ -501,11 +460,16 @@ public class Kuramotomodel extends javax.swing.JApplet {
         couplingStrength = (double) couplingStrSlider.getValue()/10.;
     }//GEN-LAST:event_couplingStrSliderPropertyChange
 
+    private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
+        System.exit(0);
+    }//GEN-LAST:event_exitButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField couplingStr;
     private javax.swing.JSlider couplingStrSlider;
     private javax.swing.JPanel displayPanel;
+    private javax.swing.JButton exitButton;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -609,5 +573,18 @@ class KuramotoModelSystem {
         k4 = tau * dtheta(wr,tr + k3);
         
         return (k1+2*k2+2*k3+k4)/6.;
+   }
+   double rand_normal()
+   {
+        double u,v,s ;
+        u = 2.*Math.random()-1. ;
+        v = 2.*Math.random()-1. ;
+        s = u*u+v*v ;
+        while(s >= 1.0) {
+                u = 2.*Math.random()-1. ;
+                v = 2.*Math.random()-1. ;
+                s = u*u+v*v ;
+        }
+        return(u*Math.sqrt(-2.*Math.log(s)/s)) ;
    }
 }
