@@ -52,8 +52,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
         //</editor-fold>
         //numberOfParticles  = numOfPtlSlider.getValue() ;
         //couplingStrength   = (double) couplingStrSlider.getValue()/10. ;
-        numberOfParticles  = 1000;
-        couplingStrength   = 5 ;
+        
         /* Create and display the applet */
         try {
             java.awt.EventQueue.invokeAndWait(new Runnable() {
@@ -154,9 +153,9 @@ public class Kuramotomodel extends javax.swing.JApplet {
         jLabel2 = new javax.swing.JLabel();
         couplingStrSlider = new javax.swing.JSlider();
         couplingStr = new javax.swing.JTextField();
-        startToPauseButton = new javax.swing.JToggleButton();
-        resetButton = new javax.swing.JButton();
+        startButton = new javax.swing.JButton();
         exitButton = new javax.swing.JButton();
+        PauseButton = new javax.swing.JToggleButton();
 
         jInternalFrame1.setTitle("Kuramoto model");
         jInternalFrame1.setMaximumSize(new java.awt.Dimension(800, 600));
@@ -246,17 +245,10 @@ public class Kuramotomodel extends javax.swing.JApplet {
             }
         });
 
-        startToPauseButton.setText("Start");
-        startToPauseButton.addActionListener(new java.awt.event.ActionListener() {
+        startButton.setText("Start");
+        startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startToPauseButtonActionPerformed(evt);
-            }
-        });
-
-        resetButton.setText("Reset");
-        resetButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resetButtonActionPerformed(evt);
+                startButtonActionPerformed(evt);
             }
         });
 
@@ -264,6 +256,13 @@ public class Kuramotomodel extends javax.swing.JApplet {
         exitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitButtonActionPerformed(evt);
+            }
+        });
+
+        PauseButton.setText("Run");
+        PauseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PauseButtonActionPerformed(evt);
             }
         });
 
@@ -288,9 +287,9 @@ public class Kuramotomodel extends javax.swing.JApplet {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(startToPauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(PauseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(exitButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(numOfPtlSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -314,9 +313,9 @@ public class Kuramotomodel extends javax.swing.JApplet {
                 .addComponent(couplingStrSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startToPauseButton)
-                    .addComponent(resetButton)
-                    .addComponent(exitButton)))
+                    .addComponent(startButton)
+                    .addComponent(exitButton)
+                    .addComponent(PauseButton)))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -353,12 +352,12 @@ public class Kuramotomodel extends javax.swing.JApplet {
         jInternalFrame1Layout.setVerticalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jInternalFrame1Layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -425,19 +424,18 @@ public class Kuramotomodel extends javax.swing.JApplet {
         couplingStr.setText(""+(double) couplingStrSlider.getValue()/10.);
     }//GEN-LAST:event_couplingStrSliderStateChanged
 
-    private void startToPauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startToPauseButtonActionPerformed
-        
-        if(startToPauseButton.isSelected()){
-            startToPauseButton.setText("Pause");
+    private void PauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PauseButtonActionPerformed
+        if(PauseButton.isSelected()){
+            PauseButton.setText("Pause");
             timer.start();
         }else{
-            startToPauseButton.setText("Start");
+            PauseButton.setText("Run");
             timer.stop();
         }
-    }//GEN-LAST:event_startToPauseButtonActionPerformed
+    }//GEN-LAST:event_PauseButtonActionPerformed
 
-    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-        
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        startButton.setText("Restart");
         // Slider로 부터 couplingStrength와 numberOfParticles를 받는다.
         numberOfParticles = numOfPtlSlider.getValue();
         couplingStrength =(double) couplingStrSlider.getValue()/10.;
@@ -445,7 +443,8 @@ public class Kuramotomodel extends javax.swing.JApplet {
         // Kuramoto Model를 다시 선언한다.
         kuramotoSystem = new KuramotoModelSystem(numberOfParticles,couplingStrength,displayPanel.getWidth());
         timer.start();
-    }//GEN-LAST:event_resetButtonActionPerformed
+        if(PauseButton.getText()=="Run")PauseButton.doClick();
+    }//GEN-LAST:event_startButtonActionPerformed
 
     private void numOfPtlSliderPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_numOfPtlSliderPropertyChange
      /*  String property = evt.getPropertyName();
@@ -466,6 +465,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton PauseButton;
     private javax.swing.JTextField couplingStr;
     private javax.swing.JSlider couplingStrSlider;
     private javax.swing.JPanel displayPanel;
@@ -478,8 +478,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
     private javax.swing.JTextField numOfPtl;
     private javax.swing.JSlider numOfPtlSlider;
     private javax.swing.JPanel orderParameterPanel;
-    private javax.swing.JButton resetButton;
-    private javax.swing.JToggleButton startToPauseButton;
+    private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
 }
 
@@ -534,8 +533,7 @@ class KuramotoModelSystem {
       double tau=0.01;
       
       for(i=0;i<numberOfParticles;i++){
-        // 임의로 입자 하나를 선택하여 그 입자의 theta를 갱신한다.
-        randomNumber = (int) (Math.random()*numberOfParticles);
+        randomNumber = i;
         wr = omega[randomNumber];
         tr = theta[randomNumber];
         
