@@ -159,6 +159,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
         jLabel3 = new javax.swing.JLabel();
         unimodalButton = new javax.swing.JRadioButton();
         bimodalButton = new javax.swing.JRadioButton();
+        jLabel4 = new javax.swing.JLabel();
 
         jInternalFrame1.setTitle("Kuramoto model");
         jInternalFrame1.setMaximumSize(new java.awt.Dimension(800, 600));
@@ -360,13 +361,17 @@ public class Kuramotomodel extends javax.swing.JApplet {
                     .addComponent(PauseButton)))
         );
 
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Kuramotomodel/Kuramotomodel.png"))); // NOI18N
+
         javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
         jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
         jInternalFrame1Layout.setHorizontalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(orderParameterPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -387,7 +392,9 @@ public class Kuramotomodel extends javax.swing.JApplet {
                             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                 .addGap(10, 10, 10)
-                                .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel4)))
                         .addGap(3, 3, 3)))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
@@ -468,6 +475,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         startButton.setText("Restart");
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Kuramotomodel.png"))); // NOI18N
         // Slider로 부터 couplingStrength와 numberOfParticles를 받는다.
         numberOfParticles = numOfPtlSlider.getValue();
         couplingStrength =(double) couplingStrSlider.getValue()/10.;
@@ -516,6 +524,7 @@ public class Kuramotomodel extends javax.swing.JApplet {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField numOfPtl;
