@@ -141,7 +141,7 @@ public class LorenzAtrractor extends javax.swing.JApplet {
                         break;
             }            
          
-            for(int i=0;i<Step-2;i++){
+            for(int i=1;i<Step-2;i++){
                 color =  Color.getHSBColor((i/(float)Step),1f,1f);
                 g.setColor(color);
                 x1=(int)(0.9*w*i/Step)  -radius/2 + (int)(0.05*w);
@@ -156,7 +156,55 @@ public class LorenzAtrractor extends javax.swing.JApplet {
             }
         }
     }
-     
+         
+    public class LorenzMapDisplay extends javax.swing.JPanel{                
+        
+        LorenzMapDisplay(){
+            super();
+        }
+        
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            int radius=4,w,check;
+            int x1,y1,zmax,zmin,start=1;
+            Color color;
+            w=getWidth();
+            x=lorenz.z;
+            zmax=0;zmin=0;x1=0;
+            check=0;
+            for(int i=1;i<Step-2;i++){
+                if(x[i-1]<x[i] && x[i] > x[i+1]){
+                    if(check == 0){
+                        x1=(int)(2*w*(-x[i]))-radius/2+w-2;
+                        System.out.print(x[i-1]+" , " + x[i]+" , "+x[i+1]+"="+i+"   "+x1+"\n");
+                        zmin=x1;
+                        check++;
+                        start=i;
+                    }
+                    else if(zmin > x[i]){
+                        zmin = (int)x[i];
+                    }
+                    
+                    if(zmax < x[i]){
+                        zmax = (int)x[i];
+                    }
+                }
+            }
+             System.out.print(x1+"\n");
+            for(int i=start;i<Step-2;i++){
+                if(x[i-1]<x[i] && x[i] > x[i+1]){
+                    color =  Color.getHSBColor((i/(float)Step),1f,1f);
+                    g.setColor(color);
+                    y1=(int)((2*w)*(-x[i]))  -radius/2+w-2;
+                    g.fillOval(x1,y1,radius,radius);
+                    System.out.print(x1+" , " + y1+": "+i+"\n");
+                    x1=y1;
+                }
+            }
+            g.setColor(Color.RED);
+            g.drawLine(-2, w, w, -2);
+        }
+    }
     /**
      * This method is called from within the init() method to initialize the
      * form. WARNING: Do NOT modify this code. The content of this method is
@@ -173,7 +221,7 @@ public class LorenzAtrractor extends javax.swing.JApplet {
         yzDisplay = new MainDisplay();
         xzDisplay = new MainDisplay();
         Display3D = new MainDisplay();
-        LorenzMapPanel = new javax.swing.JPanel();
+        LorenzMapPanel = new LorenzMapDisplay();
         TimeSeriesDisplayTab = new javax.swing.JTabbedPane();
         ztDisplay = new TimeSeriesDisplay();
         xtDisplay = new TimeSeriesDisplay();
@@ -265,7 +313,7 @@ public class LorenzAtrractor extends javax.swing.JApplet {
         LorenzMapPanel.setLayout(LorenzMapPanelLayout);
         LorenzMapPanelLayout.setHorizontalGroup(
             LorenzMapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 387, Short.MAX_VALUE)
         );
         LorenzMapPanelLayout.setVerticalGroup(
             LorenzMapPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -334,16 +382,16 @@ public class LorenzAtrractor extends javax.swing.JApplet {
                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
                         .addComponent(MainDisplayTab, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(LorenzMapPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(LorenzMapPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jInternalFrame1Layout.setVerticalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(MainDisplayTab, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(LorenzMapPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(MainDisplayTab, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(LorenzMapPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(9, 9, 9)
                 .addComponent(TimeSeriesDisplayTab, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
