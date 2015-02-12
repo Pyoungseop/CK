@@ -25,7 +25,7 @@ public class LorenzAtrractor extends javax.swing.JApplet {
     int x0,y0,z0;
     int Step;
     LorenzEq lorenz;
-    Redraw Display;
+    Draw Display;
     /**
      * Initializes the applet LorenzAtrractor
      */
@@ -62,15 +62,8 @@ public class LorenzAtrractor extends javax.swing.JApplet {
                 public void run() {
                     initComponents();
                     Step=100000;
-                    s=sigmaSlider.getValue(); 
-                    b=bSlider.getValue();
-                    r=rSlider.getValue();
-                    x0=x0Slider.getValue();
-                    y0=y0Slider.getValue();
-                    z0=z0Slider.getValue();
-                    Display = new Redraw();
-                    lorenz = new LorenzEq(s,r,b,Step,x0,y0,z0);
-                    lorenz.TimeEvolution(xymax,yzmax,xzmax);
+                    Display = new Draw();
+                    Display.draw();
                 }
             });
         } catch (Exception ex) {
@@ -78,14 +71,17 @@ public class LorenzAtrractor extends javax.swing.JApplet {
         }
     }
     
-    public class Redraw{
-        public void redraw(){
-            lorenz = new LorenzEq(s,r,b,Step,x0,y0,z0);
-            lorenz.TimeEvolution(xymax,yzmax,xzmax);
-            MainDisplayTab.remove(rootPane);
-            MainDisplayTab.remove(rootPane);
-            MainDisplayTab.repaint();
-            TimeSeriesDisplayTab.repaint();
+    public class Draw{
+        public void draw(){
+           s=(double) sigmaSlider.getValue()/100.;   b=(double) bSlider.getValue()/100.;  r=(double) rSlider.getValue()/100.;
+           sLabel.setText(""+(double) sigmaSlider.getValue()/100.);  rLabel.setText(""+(double) rSlider.getValue()/100.); bLabel.setText(""+(double) bSlider.getValue()/100.);
+           x0=x0Slider.getValue();  y0=y0Slider.getValue(); z0=z0Slider.getValue();
+           x0Label.setText(""+x0Slider.getValue()); y0Label.setText(""+y0Slider.getValue()); z0Label.setText(""+z0Slider.getValue());
+           
+           lorenz = new LorenzEq(s,r,b,Step,x0,y0,z0);
+           lorenz.TimeEvolution(xymax,yzmax,xzmax);
+           MainDisplayTab.remove(rootPane); MainDisplayTab.remove(rootPane);
+           MainDisplayTab.repaint(); TimeSeriesDisplayTab.repaint();
         }
     }
     
@@ -258,6 +254,12 @@ public class LorenzAtrractor extends javax.swing.JApplet {
         rSlider = new javax.swing.JSlider();
         jLabel6 = new javax.swing.JLabel();
         bSlider = new javax.swing.JSlider();
+        x0Label = new javax.swing.JLabel();
+        y0Label = new javax.swing.JLabel();
+        z0Label = new javax.swing.JLabel();
+        sLabel = new javax.swing.JLabel();
+        rLabel = new javax.swing.JLabel();
+        bLabel = new javax.swing.JLabel();
 
         setMaximumSize(new java.awt.Dimension(800, 600));
         setMinimumSize(new java.awt.Dimension(800, 600));
@@ -388,10 +390,13 @@ public class LorenzAtrractor extends javax.swing.JApplet {
 
         TimeSeriesDisplayTab.addTab("y vs t Graph", ytDisplay);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setMaximumSize(new java.awt.Dimension(405, 405));
+        jPanel1.setMinimumSize(new java.awt.Dimension(405, 405));
 
         jLabel1.setText("x0");
 
+        x0Slider.setValue(0);
+        x0Slider.setPreferredSize(new java.awt.Dimension(180, 50));
         x0Slider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 x0SliderStateChanged(evt);
@@ -400,6 +405,9 @@ public class LorenzAtrractor extends javax.swing.JApplet {
 
         jLabel2.setText("y0");
 
+        y0Slider.setValue(1);
+        y0Slider.setPreferredSize(new java.awt.Dimension(180, 50));
+        y0Slider.setVerifyInputWhenFocusTarget(false);
         y0Slider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 y0SliderStateChanged(evt);
@@ -408,6 +416,8 @@ public class LorenzAtrractor extends javax.swing.JApplet {
 
         jLabel3.setText("s");
 
+        z0Slider.setValue(0);
+        z0Slider.setPreferredSize(new java.awt.Dimension(180, 50));
         z0Slider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 z0SliderStateChanged(evt);
@@ -416,7 +426,10 @@ public class LorenzAtrractor extends javax.swing.JApplet {
 
         jLabel4.setText("z0");
 
-        sigmaSlider.setValue(10);
+        sigmaSlider.setMaximum(10000);
+        sigmaSlider.setMinimum(1);
+        sigmaSlider.setValue(1000);
+        sigmaSlider.setPreferredSize(new java.awt.Dimension(180, 50));
         sigmaSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 sigmaSliderStateChanged(evt);
@@ -425,7 +438,10 @@ public class LorenzAtrractor extends javax.swing.JApplet {
 
         jLabel5.setText("r");
 
-        rSlider.setValue(28);
+        rSlider.setMaximum(10000);
+        rSlider.setMinimum(1);
+        rSlider.setValue(2800);
+        rSlider.setPreferredSize(new java.awt.Dimension(180, 50));
         rSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 rSliderStateChanged(evt);
@@ -434,87 +450,114 @@ public class LorenzAtrractor extends javax.swing.JApplet {
 
         jLabel6.setText("b");
 
-        bSlider.setValue(3);
+        bSlider.setMaximum(10000);
+        bSlider.setMinimum(1);
+        bSlider.setValue(267);
+        bSlider.setPreferredSize(new java.awt.Dimension(180, 50));
         bSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 bSliderStateChanged(evt);
             }
         });
 
+        x0Label.setText("jLabel7");
+
+        y0Label.setText("jLabel8");
+
+        z0Label.setText("jLabel9");
+
+        sLabel.setText("jLabel10");
+
+        rLabel.setText("jLabel11");
+
+        bLabel.setText("jLabel12");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(x0Label)
+                    .addComponent(y0Label)
+                    .addComponent(z0Label))
+                .addGap(33, 33, 33)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(rLabel)
+                    .addComponent(sLabel)
+                    .addComponent(bLabel))
+                .addGap(3, 3, 3))
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(x0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(y0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(z0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sigmaSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(x0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(y0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(z0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(214, 214, 214)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(sigmaSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(bSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(x0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(jLabel1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(y0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel2)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(z0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel4)))
+                .addGap(151, 151, 151)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3)
+                    .addComponent(x0Label)
+                    .addComponent(sLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sigmaSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel3)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(x0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel5)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(y0Label))
+                        .addGap(12, 12, 12)
+                        .addComponent(y0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addComponent(jLabel4))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(z0Label)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(z0Slider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel6)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(rLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(11, 11, 11)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(bLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
@@ -528,7 +571,7 @@ public class LorenzAtrractor extends javax.swing.JApplet {
                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
                         .addComponent(MainDisplayTab, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jInternalFrame1Layout.setVerticalGroup(
@@ -537,7 +580,7 @@ public class LorenzAtrractor extends javax.swing.JApplet {
                 .addContainerGap()
                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(MainDisplayTab, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addComponent(TimeSeriesDisplayTab, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -560,34 +603,27 @@ public class LorenzAtrractor extends javax.swing.JApplet {
     }// </editor-fold>//GEN-END:initComponents
 
     private void rSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rSliderStateChanged
-        r=rSlider.getValue();
-        Display.redraw();
-       
+        Display.draw();
     }//GEN-LAST:event_rSliderStateChanged
 
     private void sigmaSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_sigmaSliderStateChanged
-        s=sigmaSlider.getValue(); 
-        Display.redraw();
+        Display.draw();
     }//GEN-LAST:event_sigmaSliderStateChanged
 
     private void bSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_bSliderStateChanged
-        b=bSlider.getValue();
-        Display.redraw();
+        Display.draw();
     }//GEN-LAST:event_bSliderStateChanged
 
     private void x0SliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_x0SliderStateChanged
-        x0=x0Slider.getValue();
-        Display.redraw();
+        Display.draw();
     }//GEN-LAST:event_x0SliderStateChanged
 
     private void y0SliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_y0SliderStateChanged
-        y0=y0Slider.getValue();
-        Display.redraw();
+        Display.draw();
     }//GEN-LAST:event_y0SliderStateChanged
 
     private void z0SliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_z0SliderStateChanged
-        z0=z0Slider.getValue();
-        Display.redraw();
+        Display.draw();
     }//GEN-LAST:event_z0SliderStateChanged
 
 
@@ -595,6 +631,7 @@ public class LorenzAtrractor extends javax.swing.JApplet {
     private javax.swing.JPanel Display3D;
     private javax.swing.JTabbedPane MainDisplayTab;
     private javax.swing.JTabbedPane TimeSeriesDisplayTab;
+    private javax.swing.JLabel bLabel;
     private javax.swing.JSlider bSlider;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JInternalFrame jInternalFrame1;
@@ -605,15 +642,20 @@ public class LorenzAtrractor extends javax.swing.JApplet {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel rLabel;
     private javax.swing.JSlider rSlider;
+    private javax.swing.JLabel sLabel;
     private javax.swing.JSlider sigmaSlider;
+    private javax.swing.JLabel x0Label;
     private javax.swing.JSlider x0Slider;
     private javax.swing.JPanel xtDisplay;
     private javax.swing.JPanel xyDisplay;
     private javax.swing.JPanel xzDisplay;
+    private javax.swing.JLabel y0Label;
     private javax.swing.JSlider y0Slider;
     private javax.swing.JPanel ytDisplay;
     private javax.swing.JPanel yzDisplay;
+    private javax.swing.JLabel z0Label;
     private javax.swing.JSlider z0Slider;
     private javax.swing.JPanel ztDisplay;
     // End of variables declaration//GEN-END:variables
@@ -621,7 +663,7 @@ public class LorenzAtrractor extends javax.swing.JApplet {
 
 class LorenzEq {
        
-    double dt = 0.001;
+    double dt;
     int step;
     double s,r,b;
     
@@ -634,6 +676,7 @@ class LorenzEq {
         this.r=r;
         this.b=b;
         step=Step;
+        dt=65./(double)step;
         x= new double[Step];
         y= new double[Step];
         z= new double[Step];
