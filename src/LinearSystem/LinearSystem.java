@@ -381,13 +381,13 @@ class LinearEq {
    }
     
    double dx(double x,double y){
-       //return a*x+b*y;
-       return -y+a*x*(x*x+y*y);
+       return a*x+b*y;
+       //return -y+a*x*(x*x+y*y);
        //return -x+a*y+x*x*y;
    } 
    double dy(double x,double y){
-       //return c*x+d*y;
-       return x+a*y*(x*x+y*y);
+       return c*x+d*y;
+       //return x+a*y*(x*x+y*y);
        //return b-a*y-x*x*y;
    } 
 }
